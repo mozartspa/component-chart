@@ -2,17 +2,8 @@
 {{- if $.Values.autoScaling.horizontal }}
 {{- if gt $.Values.autoScaling.horizontal.maxReplicas $.Values.replicas }}
 {{- $kind := "Deployment" }}
-{{- range $containerIndex, $container := $.Values.containers }}
-  {{- range $volumeMountIndex, $volumeMount := $container.volumeMounts }}
-    {{- if $volumeMount.volume.readOnly }}
-    {{- else }}
-      {{- range $volumeIndex, $volume := $.Values.volumes }}
-        {{- if eq $volumeMount.volume.name $volume.name }}
-          {{- $kind = "StatefulSet" }}
-        {{- end }}
-      {{- end }}
-    {{- end }}
-  {{- end }}
+{{- if eq $.Values.statefulSet true }}
+{{- $kind = "StatefulSet" }}
 {{- end }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler

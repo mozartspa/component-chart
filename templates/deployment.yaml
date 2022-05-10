@@ -2,19 +2,8 @@
 {{- if eq $containerIndex 0 }}
 apiVersion: apps/v1
 {{- $kind := "Deployment" }}
-{{- range $containerIndex, $container := $.Values.containers }}
-  {{- range $volumeMountIndex, $volumeMount := $container.volumeMounts }}
-    {{- if $volumeMount.volume.readOnly }}
-    {{- else }}
-      {{- range $volumeIndex, $volume := $.Values.volumes }}
-        {{- if not (or (hasKey $volume "secret") (hasKey $volume "configMap") (hasKey $volume "emptyDir") ) }}
-        {{- if eq $volumeMount.volume.name $volume.name }}
-          {{- $kind = "StatefulSet" }}
-        {{- end }}
-        {{- end }}
-      {{- end }}
-    {{- end }}
-  {{- end }}
+{{- if eq $.Values.statefulSet true }}
+{{- $kind = "StatefulSet" }}
 {{- end }}
 kind: {{ $kind }}
 metadata:
